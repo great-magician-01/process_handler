@@ -56,6 +56,10 @@ func (m Model) Init() tea.Cmd {
 	return m.collectCmd()
 }
 
+func (m Model) View() string {
+	return ""
+}
+
 func (m Model) collectCmd() tea.Cmd {
 	return func() tea.Msg {
 		rows, err := portscan.Collect()
