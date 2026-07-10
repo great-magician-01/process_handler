@@ -67,7 +67,8 @@ func getListeningPorts() ([]procinfo.PortEntry, error) {
 		if row.State != mibTCPStateListen {
 			continue
 		}
-		port := uint16(row.LocalPort)
+		raw := uint16(row.LocalPort)
+		port := raw>>8 | raw<<8
 		ip := net.IPv4(row.LocalAddr[0], row.LocalAddr[1], row.LocalAddr[2], row.LocalAddr[3]).String()
 
 		entries = append(entries, procinfo.PortEntry{
