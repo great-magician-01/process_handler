@@ -32,6 +32,8 @@ func (m Model) View() string {
 		if len(m.Rows) > 0 && m.Cursor < len(m.Rows) {
 			sections = append(sections, renderConfirmDialog(&m))
 		}
+	case stateHelp:
+		sections = append(sections, renderHelpOverlay())
 	case stateKilling:
 		sections = append(sections, MutedStyle.Render(fmt.Sprintf("Killing PID %d...", m.ConfirmPID)))
 	default:
@@ -62,6 +64,10 @@ func (m Model) View() string {
 	return lipgloss.JoinVertical(lipgloss.Left, sections...)
 }
 
+func renderHelpOverlay() string {
+	return ConfirmBox.Width(50).Render(helpOverlay)
+}
+
 func renderConfirmDialog(m *Model) string {
 	r := m.Rows[m.Cursor]
 
@@ -69,27 +75,21 @@ func renderConfirmDialog(m *Model) string {
 	lines = append(lines, fmt.Sprintf("Terminate PID %d (%s) ?", r.PID, r.Proc.Name))
 	lines = append(lines, fmt.Sprintf("Port: %s:%d", r.LocalAddr, r.LocalPort))
 
-	if r.Critical == procinfo.CritBlocked {
+	if r.Critical == procinfo.CritWarn {
 		lines = append(lines, "")
-		lines = append(lines, CriticalStyle.Render("This process CANNOT be terminated. It is a critical system process."))
-		lines = append(lines, HelpStyle.Render("Press esc to go back"))
-	} else {
-		if r.Critical == procinfo.CritWarn {
-			lines = append(lines, "")
-			lines = append(lines, WarnStyle.Render("Warning: This appears to be a system-owned process."))
-			lines = append(lines, WarnStyle.Render("Terminating it may cause system instability."))
-			lines = append(lines, fmt.Sprintf("Type the PID number to confirm: %d", r.PID))
-			if m.ConfirmInput != "" {
-				lines = append(lines, fmt.Sprintf("Input: %s", m.ConfirmInput))
-			}
-		} else {
-			lines = append(lines, fmt.Sprintf("User: %s", r.Proc.Username))
-			if r.Proc.ExePath != "" {
-				lines = append(lines, fmt.Sprintf("Path: %s", r.Proc.ExePath))
-			}
-			lines = append(lines, "")
-			lines = append(lines, HelpStyle.Render("Press y to confirm, n/esc to cancel"))
+		lines = append(lines, WarnStyle.Render("Warning: This appears to be a system-owned process."))
+		lines = append(lines, WarnStyle.Render("Terminating it may cause system instability."))
+		lines = append(lines, fmt.Sprintf("Type the PID number to confirm: %d", r.PID))
+		if m.ConfirmInput != "" {
+			lines = append(lines, fmt.Sprintf("Input: %s", m.ConfirmInput))
 		}
+	} else {
+		lines = append(lines, fmt.Sprintf("User: %s", r.Proc.Username))
+		if r.Proc.ExePath != "" {
+			lines = append(lines, fmt.Sprintf("Path: %s", r.Proc.ExePath))
+		}
+		lines = append(lines, "")
+		lines = append(lines, HelpStyle.Render("Press y to confirm, n/esc to cancel"))
 	}
 
 	content := strings.Join(lines, "\n")

@@ -14,6 +14,7 @@ const (
 	stateFilter
 	stateConfirm
 	stateKilling
+	stateHelp
 )
 
 type Model struct {

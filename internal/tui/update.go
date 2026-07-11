@@ -20,28 +20,37 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.Height = msg.Height
 
 	case tea.KeyMsg:
-		switch m.State {
-		case stateBrowse:
-			cmd = updateBrowse(&m, msg)
-		case stateFilter:
-			cmd = updateFilter(&m, msg)
-		case stateConfirm:
-			cmd = updateConfirm(&m, msg)
-		case stateKilling:
+		if msg.String() == "ctrl+c" {
+			return m, tea.Quit
 		}
+	switch m.State {
+	case stateBrowse:
+		cmd = updateBrowse(&m, msg)
+	case stateFilter:
+		cmd = updateFilter(&m, msg)
+	case stateConfirm:
+		cmd = updateConfirm(&m, msg)
+	case stateHelp:
+		if msg.String() == "esc" {
+			m.State = stateBrowse
+		}
+	case stateKilling:
+	}
 
 	case collectResultMsg:
 		if msg.Err != nil {
 			m.Error = msg.Err.Error()
 		} else {
 			m.Error = ""
-			m.AllRows = msg.Rows
-			m.applyFilter()
-			if m.Cursor >= len(m.Rows) && len(m.Rows) > 0 {
-				m.Cursor = len(m.Rows) - 1
-			}
-			if len(m.Rows) == 0 {
-				m.Cursor = 0
+			if m.State != stateConfirm {
+				m.AllRows = msg.Rows
+				m.applyFilter()
+				if m.Cursor >= len(m.Rows) && len(m.Rows) > 0 {
+					m.Cursor = len(m.Rows) - 1
+				}
+				if len(m.Rows) == 0 {
+					m.Cursor = 0
+				}
 			}
 		}
 
@@ -108,6 +117,8 @@ func updateBrowse(m *Model, msg tea.KeyMsg) tea.Cmd {
 		m.ConfirmLevel = row.Critical
 		m.ConfirmInput = ""
 		m.Toast = ""
+	case "?":
+		m.State = stateHelp
 	}
 	return nil
 }

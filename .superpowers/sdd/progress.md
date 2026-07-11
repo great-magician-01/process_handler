@@ -1,2 +1,11 @@
 Base commit: fd70420
-Task 1 complete: false
+Task 1: complete (fd70420..5460af0, review clean)
+Task 2: complete (5460af0..86a34a5, concerns resolved)
+Task 3: complete (86a34a5..116c01d, review clean)
+Task 4: complete (116c01d..1a1fe91, port byte-swap fixed)
+Task 5: complete (1a1fe91..752b926, kill tests pass)
+Task 6: complete (752b926..7a996fb, model compiled)
+Task 7: complete (7a996fb..8dff60b, table+detail rendering)
+Task 8: complete (8dff60b..ce21a52, 13 tests pass)
+Task 9: complete (ce21a52..47838e4, view assembly)
+Task 10: complete (47838e4..79e05ee, 18/18 all tests pass)

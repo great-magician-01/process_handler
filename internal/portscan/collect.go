@@ -10,7 +10,7 @@ func Collect() ([]procinfo.Row, error) {
 	var (
 		ports            []procinfo.PortEntry
 		procs            map[uint32]procinfo.ProcessInfo
-		portErr, procErr error
+		portErr, _       error
 		wg               sync.WaitGroup
 	)
 
@@ -21,7 +21,7 @@ func Collect() ([]procinfo.Row, error) {
 	}()
 	go func() {
 		defer wg.Done()
-		procs, procErr = getProcessInfo()
+		procs, _ = getProcessInfo()
 	}()
 	wg.Wait()
 
@@ -31,14 +31,12 @@ func Collect() ([]procinfo.Row, error) {
 
 	rows := join(ports, procs)
 
-	if procErr == nil {
-		for i := range rows {
-			user, err := getUsername(rows[i].PID)
-			if err == nil {
-				rows[i].Proc.Username = user
-			}
-			rows[i].Critical = procinfo.Classify(rows[i].PID, rows[i].Proc.Name, rows[i].Proc.Username)
+	for i := range rows {
+		user, err := getUsername(rows[i].PID)
+		if err == nil {
+			rows[i].Proc.Username = user
 		}
+		rows[i].Critical = procinfo.Classify(rows[i].PID, rows[i].Proc.Name, rows[i].Proc.Username)
 	}
 
 	return rows, nil
