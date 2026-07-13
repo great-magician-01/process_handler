@@ -3,7 +3,7 @@ package portscan
 import (
 	"sync"
 
-	"process_handler/internal/procinfo"
+	"github.com/great-magician-01/process_handler/internal/procinfo"
 )
 
 func Collect() ([]procinfo.Row, error) {

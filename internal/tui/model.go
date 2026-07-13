@@ -1,8 +1,8 @@
 package tui
 
 import (
-	"process_handler/internal/portscan"
-	"process_handler/internal/procinfo"
+	"github.com/great-magician-01/process_handler/internal/portscan"
+	"github.com/great-magician-01/process_handler/internal/procinfo"
 
 	tea "github.com/charmbracelet/bubbletea"
 )

@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
-	"process_handler/internal/kill"
-	"process_handler/internal/procinfo"
+	"github.com/great-magician-01/process_handler/internal/kill"
+	"github.com/great-magician-01/process_handler/internal/procinfo"
 
 	tea "github.com/charmbracelet/bubbletea"
 )

@@ -1,6 +1,6 @@
 package portscan
 
-import "process_handler/internal/procinfo"
+import "github.com/great-magician-01/process_handler/internal/procinfo"
 
 func join(ports []procinfo.PortEntry, procs map[uint32]procinfo.ProcessInfo) []procinfo.Row {
 	rows := make([]procinfo.Row, 0, len(ports))

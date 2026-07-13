@@ -5,7 +5,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"process_handler/internal/procinfo"
+	"github.com/great-magician-01/process_handler/internal/procinfo"
 
 	"golang.org/x/sys/windows"
 )
