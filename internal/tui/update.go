@@ -175,14 +175,21 @@ func updateConfirm(m *Model, msg tea.KeyMsg) tea.Cmd {
 }
 
 func (m *Model) applyFilter() {
+	var rows []procinfo.Row
 	if m.Filter == "" {
-		m.Rows = m.AllRows
-		return
+		rows = m.AllRows
+	} else {
+		lower := strings.ToLower(m.Filter)
+		rows = make([]procinfo.Row, 0)
+		for _, r := range m.AllRows {
+			if matchFilter(lower, r) {
+				rows = append(rows, r)
+			}
+		}
 	}
-	lower := strings.ToLower(m.Filter)
-	filtered := make([]procinfo.Row, 0)
-	for _, r := range m.AllRows {
-		if matchFilter(lower, r) {
+	filtered := make([]procinfo.Row, 0, len(rows))
+	for _, r := range rows {
+		if r.Critical != procinfo.CritBlocked {
 			filtered = append(filtered, r)
 		}
 	}
